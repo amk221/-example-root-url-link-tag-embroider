@@ -7,5 +7,30 @@ module.exports = function (defaults) {
     // Add options here
   });
 
-  return app.toTree();
+  const { Webpack } = require('@embroider/webpack');
+  return require('@embroider/compat').compatBuild(app, Webpack, {
+    staticAddonTestSupportTrees: true,
+    staticAddonTrees: true,
+    // staticHelpers: true,
+    // staticModifiers: true,
+    // staticComponents: true,
+    staticEmberSource: true,
+    packagerOptions: {
+      // Toggle this to show xyz is NOT used on the woff2 link tag in index.html
+      // publicAssetURL: 'xyz/',
+      webpackConfig: {
+        module: {
+          rules: [
+            {
+              test: /\.woff2$/i,
+              type: 'asset/resource',
+              generator: {
+                filename: '[path][name]-[hash][ext][query]',
+              },
+            },
+          ],
+        },
+      },
+    },
+  });
 };
